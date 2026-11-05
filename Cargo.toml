@@ -1,0 +1,8 @@
+[package]
+name = "slop"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "slop"
+path = "src/main.rs"

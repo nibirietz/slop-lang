@@ -1,0 +1,56 @@
+// Sudoku solver. The board is a row-major Array[Int]; zero means blank.
+fn allowed(board: Array, pos: Int, value: Int) -> Bool {
+    let row: Int = pos / 9;
+    let col: Int = pos % 9;
+    let i: Int = 0;
+    while i < 9 {
+        if board[row * 9 + i] == value { return false; }
+        if board[i * 9 + col] == value { return false; }
+        i = i + 1;
+    }
+
+    let box_row: Int = (row / 3) * 3;
+    let box_col: Int = (col / 3) * 3;
+    let dy: Int = 0;
+    while dy < 3 {
+        let dx: Int = 0;
+        while dx < 3 {
+            if board[(box_row + dy) * 9 + box_col + dx] == value { return false; }
+            dx = dx + 1;
+        }
+        dy = dy + 1;
+    }
+    return true;
+}
+
+fn solve(board: Array, pos: Int) -> Bool {
+    if pos == 81 { return true; }
+    if board[pos] != 0 { return solve(board, pos + 1); }
+
+    let value: Int = 1;
+    while value <= 9 {
+        if allowed(board, pos, value) {
+            board[pos] = value;
+            if solve(board, pos + 1) { return true; }
+            board[pos] = 0;
+        }
+        value = value + 1;
+    }
+    return false;
+}
+
+fn main() -> Array {
+    let board: Array = fill(81, 0);
+    // A standard puzzle; blanks are zero. Values are placed row by row.
+    board[0] = 5; board[1] = 3; board[4] = 7;
+    board[9] = 6; board[12] = 1; board[13] = 9; board[14] = 5;
+    board[19] = 9; board[20] = 8; board[25] = 6;
+    board[27] = 8; board[31] = 6; board[35] = 3;
+    board[36] = 4; board[39] = 8; board[41] = 3; board[44] = 1;
+    board[45] = 7; board[49] = 2; board[53] = 6;
+    board[55] = 6; board[60] = 2; board[61] = 8;
+    board[66] = 4; board[67] = 1; board[68] = 9; board[71] = 5;
+    board[76] = 8; board[79] = 7; board[80] = 9;
+    if !solve(board, 0) { return fill(81, -1); }
+    return board;
+}
